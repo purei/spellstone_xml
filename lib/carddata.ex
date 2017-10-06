@@ -81,13 +81,14 @@ defmodule CardData do
   """
   def get_card(card_id) do
     the_card = Agent.get(CardData, fn(lib) -> lib.card_map.units[card_id] end)
+
     #Level 1 is implied, add it explicitly, even though it's also all upgrade data
-    Map.put_new(the_card, :level, 1)
+    if the_card, do: Map.put_new(the_card, :level, 1), else: nil
   end
   def get_card(card_id, level) do
     the_card = Agent.get(CardData, fn(lib) -> lib.card_map.units[card_id] end)
-    #Level 1 is implied, add it explicitly
-    CardData.get_data(the_card, level)
+
+    if the_card, do: CardData.get_data(the_card, level), else: nil
   end
 
   @doc """
