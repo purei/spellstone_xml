@@ -101,6 +101,7 @@ loadData is used by the CardData agent
       skill_types: [
         ~x"//skillType[not(id = 'displayEffect')]"l,
         id: ~x"id/text()"s,
+        icon: ~x"icon/text()"s,
         order: ~x"order/text()"Io,
         name: ~x"name/text()"So,
         desc: ~x"desc/text()"So,
