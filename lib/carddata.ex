@@ -30,9 +30,20 @@ defmodule CardData do
       fn({id,%{name: name}}, acc) ->
         cond do
           id <= 1000 -> acc
-          true -> [{name, id} | acc]
+          true ->
+            no_punc_name = String.replace(String.downcase(name), ~r/[\p{P}\p{S}]/, "")
+
+            # If name has a comma, it's probably after the first word, so that's the 'main'
+            # otherwise, the last word is often the noun, thus 'main'
+            {which_main,which_other} = if String.match?(name, ~r/,/), do: {0,-1}, else: {-1,0}
+            splitted = Regex.split(~r/\s+/, no_punc_name)
+            main = Enum.at(splitted, which_main)
+            other = Enum.at(splitted, which_other)
+
+            [{String.downcase(name), main, other, id} | acc]
         end
       end
+    # IO.inspect search
 
     Agent.start_link(fn -> %{card_map: card_map, search: search} end, name: __MODULE__)
   end
@@ -108,11 +119,17 @@ defmodule CardData do
   Search_name does a fuzzy string match on all card names
   Returns stats at the max upgrade level for 'n' of them, default 1
   """
-  def search_name(name, n \\ 1) do
+  def search_name(string, n \\ 1) do
     Agent.get CardData, fn(lib) ->
       # Take all of the names and calc their jaro distance, then sort by highest
       sorted = lib.search
-      |> Enum.map(fn({str,id}) -> {id, String.jaro_distance(name, str)} end)
+      |> Enum.map(fn({name,main,other,id}) ->
+        val = Enum.max([
+          String.jaro_distance(name,string),
+          String.jaro_distance(main,string)+0.01, # fudge factor to help proper named units (Atlas,) go to the top of the list
+          String.jaro_distance(other,string)])
+        {id, val}
+      end)
       |> Enum.sort(fn({_a_id,a},{_b_id,b}) -> a > b end)
 
       # Take the top 'n', and return the stats of max upgrade
