@@ -13,14 +13,16 @@ defmodule CardData do
 
   use Agent
 
+  @files Application.get_env(:spellstone_xml, :files)
+
   def start_link(_opts) do
-    # FIXME hack
-    files = ["cards_config", "cards_heroes", "cards_premium_aether", "cards_premium_chaos", "cards_premium_wyld", "cards_reward", "cards_special", "cards_standard", "cards_story"]
+    cards_to_load = Enum.filter(@files, &String.starts_with?(&1,"cards_"))
+    # cards_to_load = ["cards_standard", "cards_config"]
 
     # it's blocking here, and is slow
     # failed: xml file didn't exist, .
     IO.puts("Load/parse XML files, merge the data")
-    card_map = Enum.reduce files, %{}, fn(file, acc) ->
+    card_map = Enum.reduce cards_to_load, %{}, fn(file, acc) ->
       card_portion = Librarian.loadData("remote_xml/"<>file<>".xml")
       DeepMerge.deep_merge acc, card_portion
     end

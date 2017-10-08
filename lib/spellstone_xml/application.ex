@@ -10,7 +10,6 @@ defmodule SpellstoneXML.Application do
     children =
       if Application.get_env(:spellstone_xml, :load) do
         [
-          # Starts a worker by calling: SpellstoneXML.Worker.start_link(arg)
           CardData
         ]
       else
