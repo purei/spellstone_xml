@@ -5,11 +5,11 @@ downloadFullLibrary grabs all xml from Synapse server
 loadData is used by the CardData agent
 """
 
-@file_dir Application.get_env(:spellstone_xml, :file_dir)
-@files Application.get_env(:spellstone_xml, :files)
+# @file_dir Application.get_env(:spellstone_xml, :file_dir)
+# @files Application.get_env(:spellstone_xml, :files)
 
   def downloadFullLibrary do
-    download @files
+    download Application.get_env(:spellstone_xml, :files)
   end
 
   def download files do
@@ -33,7 +33,7 @@ loadData is used by the CardData agent
       fn(name) ->
         filename = name <> ".xml"
         url = Path.join(secure_url_prefix, filename)
-        output = Path.join(@file_dir, filename)
+        output = Path.join(Application.get_env(:spellstone_xml, :file_dir), filename)
         case HTTPoison.get(url, headers, request_options) do
           {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
             # FIXME, assumes content is gzipped
