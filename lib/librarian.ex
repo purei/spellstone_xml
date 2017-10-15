@@ -5,9 +5,6 @@ downloadFullLibrary grabs all xml from Synapse server
 loadData is used by the CardData agent
 """
 
-# @file_dir Application.get_env(:spellstone_xml, :file_dir)
-# @files Application.get_env(:spellstone_xml, :files)
-
   def downloadFullLibrary do
     download Application.get_env(:spellstone_xml, :files)
   end

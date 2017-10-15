@@ -13,10 +13,10 @@ defmodule CardData do
 
   use Agent
 
-  @files Application.get_env(:spellstone_xml, :files)
+  # @files Application.get_env(:spellstone_xml, :files)
 
   def start_link(_opts) do
-    cards_to_load = Enum.filter(@files, &String.starts_with?(&1,"cards_"))
+    cards_to_load = Enum.filter(Application.get_env(:spellstone_xml, :files), &String.starts_with?(&1,"cards_"))
     # cards_to_load = ["cards_standard", "cards_config"]
 
     # it's blocking here, and is slow
