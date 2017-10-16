@@ -25,7 +25,8 @@ defmodule CardData do
     IO.puts(Enum.join(File.ls!(),", "))
     IO.puts("Load/parse XML files, merge the data")
     card_map = Enum.reduce cards_to_load, %{}, fn(file, acc) ->
-      card_portion = Librarian.loadData("remote_xml/"<>file<>".xml")
+      file_path = Path.join(Application.get_env(:spellstone_xml, :file_dir), file)
+      card_portion = Librarian.loadData(file_path<>".xml")
       DeepMerge.deep_merge acc, card_portion
     end
 
