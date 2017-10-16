@@ -21,8 +21,6 @@ defmodule CardData do
 
     # it's blocking here, and is slow
     # failed: xml file didn't exist, .
-    IO.puts("Checking dir")
-    IO.puts(Enum.join(File.ls!(),", "))
     IO.puts("Load/parse XML files, merge the data")
     card_map = Enum.reduce cards_to_load, %{}, fn(file, acc) ->
       file_path = Path.join(Application.get_env(:spellstone_xml, :file_dir), file)
