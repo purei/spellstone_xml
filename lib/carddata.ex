@@ -21,6 +21,8 @@ defmodule CardData do
 
     # it's blocking here, and is slow
     # failed: xml file didn't exist, .
+    IO.puts("Checking dir")
+    IO.puts(Enum.join(File.ls!(),", "))
     IO.puts("Load/parse XML files, merge the data")
     card_map = Enum.reduce cards_to_load, %{}, fn(file, acc) ->
       card_portion = Librarian.loadData("remote_xml/"<>file<>".xml")
